@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocSoleil - Expert Énergie Solaire</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --solar-gold: #ff9f43;
+            --solar-dark: #2f3640;
+            --solar-blue: #0984e3;
+            --light-bg: #f5f6fa;
+        }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--light-bg); margin: 0; padding: 0; color: var(--solar-dark); }
+        header { background: var(--solar-dark); color: white; padding: 1.5rem; text-align: center; border-bottom: 5px solid var(--solar-gold); }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        
+        /* Dashboard Layout */
+        .dashboard-grid { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+        .sidebar { background: white; padding: 20px; border-radius: 12px; height: fit-content; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .main-content { display: flex; flex-direction: column; gap: 20px; }
+        
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .chart-container { position: relative; height: 400px; width: 100%; }
+
+        /* Controls */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
+        select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #dcdde1; font-size: 1rem; cursor: pointer; }
+        button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-update { background: var(--solar-gold); color: white; }
+        .btn-update:hover { background: #ee5253; }
+        .btn-download { background: #10ac84; color: white; margin-top: 5px; }
+
+        .stats-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: var(--solar-blue); color: white; padding: 15px; border-radius: 8px; text-align: center; }
+        .stat-box small { display: block; opacity: 0.8; }
+        .stat-box span { font-size: 1.4rem; font-weight: bold; }
+
+        #loader { display: none; text-align: center; font-style: italic; color: var(--solar-gold); margin: 10px 0; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>DocSoleil : Analyse de l'Ensoleillement</h1>
+    <p>Données API réelles de 2021 à 2026</p>
+</header>
+
+<div class="container">
+    <div class="dashboard-grid">
+        <aside class="sidebar">
+            <h3>Paramètres</h3>
+            <div class="form-group">
+                <label>Ville</label>
+                <select id="city">
+                    <option value="grenoble">Grenoble</option>
+                    <option value="paris">Paris</option>
+                    <option value="marseille">Marseille</option>
+                    <option value="toulon">Toulon</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Échelle temporelle</label>
+                <select id="timeframe">
+                    <option value="annual">Annuelle (N à N-5)</option>
+                    <option value="monthly">Mensuelle (Détails)</option>
+                    <option value="weekly">Hebdomadaire</option>
+                    <option value="daily">Journalière</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Année de référence</label>
+                <select id="year">
+                    <option value="2026">2026 (N)</option>
+                    <option value="2025">2025 (N-1)</option>
+                    <option value="2024">2024 (N-2)</option>
+                    <option value="2023">2023 (N-3)</option>
+                    <option value="2022">2022 (N-4)</option>
+                    <option value="2021">2021 (N-5)</option>
+                </select>
+            </div>
+            <button class="btn-update" onclick="fetchData()">Mettre à jour les données</button>
+            <button class="btn-download" onclick="exportData()">Télécharger CSV</button>
+            <div id="loader">Récupération des données...</div>
+        </aside>
+
+        <main class="main-content">
+            <div class="stats-summary" id="summary">
+                <div class="stat-box"><small>Total Energie</small><span id="totalVal">-</span><small>kWh/m²</small></div>
+                <div class="stat-box" style="background:#ee5253"><small>Pic Max</small><span id="maxVal">-</span><small>kWh/m²</small></div>
+                <div class="stat-box" style="background:#1dd1a1"><small>Moyenne</small><span id="avgVal">-</span><small>kWh/m²</small></div>
+            </div>
+
+            <div class="card">
+                <h2 id="chartTitle">Rayonnement Solaire Incident</h2>
+                <div 

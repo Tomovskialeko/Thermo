@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: #0f2540;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Syne', sans-serif;
+  }
+}
+
+@layer components {
+  .radio-card {
+    @apply border-2 border-gray-200 rounded-xl p-3 cursor-pointer transition-all duration-200 flex items-center gap-3 text-sm text-navy bg-white;
+  }
+  .radio-card:hover {
+    @apply border-orange-light bg-orange-50;
+  }
+  .radio-card.selected {
+    @apply border-orange bg-orange-50 text-orange font-medium;
+  }
+
+  .form-input {
+    @apply w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl font-dm text-sm text-navy bg-white transition-colors duration-200 focus:outline-none focus:border-orange;
+  }
+
+  .btn-primary {
+    @apply px-7 py-3 rounded-xl font-syne font-semibold text-sm text-white bg-orange cursor-pointer transition-all duration-200 shadow-lg shadow-orange/30 hover:bg-orange-600 hover:-translate-y-px;
+  }
+
+  .btn-secondary {
+    @apply px-7 py-3 rounded-xl font-syne font-semibold text-sm text-navy bg-white border-2 border-gray-200 cursor-pointer transition-all duration-200 hover:border-navy-mid;
+  }
+
+  .btn-navy {
+    @apply px-7 py-3 rounded-xl font-syne font-semibold text-sm text-white bg-navy-mid cursor-pointer transition-all duration-200 hover:bg-navy;
+  }
+
+  .section-title {
+    @apply font-syne font-bold text-navy-mid text-sm uppercase tracking-wide mb-5 flex items-center gap-3;
+  }
+  .section-title::after {
+    content: '';
+    @apply flex-1 h-px bg-gray-200;
+  }
+
+  .field-label {
+    @apply block text-xs font-medium text-navy-mid uppercase tracking-wide mb-2;
+  }
+
+  .field-hint {
+    @apply text-xs text-gray-400 mt-1 italic;
+  }
+}
+
+/* Font utilities not in Tailwind base config */
+.font-syne { font-family: 'Syne', sans-serif; }
+.font-dm { font-family: 'DM Sans', sans-serif; }
